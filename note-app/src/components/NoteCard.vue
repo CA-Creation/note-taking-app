@@ -2,18 +2,28 @@
   <div class="note-card">
     <div v-if="editing">
       <p class="note-head">Title</p>
-      <input v-model="localNote.title" class="note-title-input" />
-      
+      <input
+        v-model="localNote.title"
+        class="note-title-input"
+        @input="clearWarning('title')"
+      />
+      <p v-if="errors.title" class="warning-msg">{{ errors.title }}</p>
+
       <p class="note-head">Content</p>
-      <textarea v-model="localNote.content" class="note-textarea"></textarea>
-      
+      <textarea
+        v-model="localNote.content"
+        class="note-textarea"
+        @input="clearWarning('content')"
+      ></textarea>
+      <p v-if="errors.content" class="warning-msg">{{ errors.content }}</p>
+
       <div class="note-actions">
         <button @click="save" class="btn edit-btn">Save</button>
         <button @click="cancel" class="btn cancel-btn">Cancel</button>
       </div>
     </div>
     <div v-else>
-      <p class="note-head">Titile</p>
+      <p class="note-head">Title</p>
       <h3 class="note-title">{{ note.title }}</h3>
       <p class="note-head">Content</p>
       <p class="note-content">{{ note.content }}</p>
@@ -26,6 +36,7 @@
 </template>
 
 
+
 <script>
 export default {
   props: {
@@ -34,21 +45,46 @@ export default {
   data() {
     return {
       editing: false,
-      localNote: { ...this.note }
-    }
+      localNote: { ...this.note },
+      errors: {
+        title: '',
+        content: ''
+      }
+    };
   },
   methods: {
     save() {
-      this.$emit('save', this.localNote)
-      this.editing = false
+
+      this.errors.title = '';
+      this.errors.content = '';
+
+
+      if (!this.localNote.title.trim()) {
+        this.errors.title = "Title can't be empty";
+      }
+      if (!this.localNote.content.trim()) {
+        this.errors.content = "Content can't be empty";
+      }
+
+      if (this.errors.title || this.errors.content) return;
+
+
+      this.$emit('save', this.localNote);
+      this.editing = false;
     },
     cancel() {
-      this.localNote = { ...this.note }
-      this.editing = false
+      this.localNote = { ...this.note };
+      this.errors.title = '';
+      this.errors.content = '';
+      this.editing = false;
+    },
+    clearWarning(field) {
+      this.errors[field] = '';
     }
   }
-}
+};
 </script>
+
 
 
 <style scoped>

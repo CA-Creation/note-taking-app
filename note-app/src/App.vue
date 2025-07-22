@@ -7,6 +7,8 @@
 
     <NoteModal :visible="showModal" @close="showModal = false" @save="createNote" />
 
+    <hr/>
+
     <div class="note-list">
       <NoteCard
         v-for="note in notes"

@@ -5,14 +5,19 @@
 
       <input
         v-model="title"
+        @input="clearWarning('title')"
         placeholder="Enter Title"
         class="input-title"
       />
+      <p v-if="warnings.title" class="warning-msg">{{ warnings.title }}</p>
+
       <textarea
         v-model="content"
+        @input="clearWarning('content')"
         placeholder="Write your note..."
         class="input-content"
       ></textarea>
+      <p v-if="warnings.content" class="warning-msg">{{ warnings.content }}</p>
 
       <div class="modal-actions">
         <button class="btn save-btn" @click="saveNote">Save</button>
@@ -22,28 +27,53 @@
   </div>
 </template>
 
+
+
 <script>
 export default {
   props: ['visible'],
   data() {
     return {
       title: '',
-      content: ''
+      content: '',
+      warnings: {
+        title: '',
+        content: ''
+      }
     };
   },
   methods: {
     saveNote() {
-      if (!this.title.trim() || !this.content.trim()) return;
+      this.warnings.title = '';
+      this.warnings.content = '';
+
+      if (!this.title.trim()) {
+        this.warnings.title = "Title can't be empty";
+      }
+      if (!this.content.trim()) {
+        this.warnings.content = "Content can't be empty";
+      }
+
+      if (this.warnings.title || this.warnings.content) return;
+
       this.$emit('save', {
         title: this.title,
         content: this.content
       });
+
       this.title = '';
       this.content = '';
+      this.warnings.title = '';
+      this.warnings.content = '';
+    },
+    clearWarning(field) {
+      this.warnings[field] = '';
     }
   }
 };
 </script>
+
+
 
 <style scoped>
 .overlay {
@@ -57,6 +87,13 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+}
+.warning-msg {
+  color: #ff9800;
+  font-size: 0.85rem;
+  margin-top: -12px;
+  margin-bottom: 12px;
+  padding-left: 4px;
 }
 
 .modal-card {
