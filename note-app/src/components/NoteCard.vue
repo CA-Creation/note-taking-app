@@ -1,15 +1,21 @@
 <template>
   <div class="note-card">
     <div v-if="editing">
+      <p class="note-head">Title</p>
       <input v-model="localNote.title" class="note-title-input" />
+      
+      <p class="note-head">Content</p>
       <textarea v-model="localNote.content" class="note-textarea"></textarea>
+      
       <div class="note-actions">
         <button @click="save" class="btn edit-btn">Save</button>
         <button @click="cancel" class="btn cancel-btn">Cancel</button>
       </div>
     </div>
     <div v-else>
+      <p class="note-head">Titile</p>
       <h3 class="note-title">{{ note.title }}</h3>
+      <p class="note-head">Content</p>
       <p class="note-content">{{ note.content }}</p>
       <div class="note-actions">
         <button @click="editing = true" class="btn edit-btn">Edit</button>
@@ -18,6 +24,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -43,8 +50,13 @@ export default {
 }
 </script>
 
-/* Same CSS styles as before, just add styles for .note-title-input and .cancel-btn */
+
 <style scoped>
+.note-head {
+  margin-bottom: 0;
+  opacity: 0.5;
+  
+}
 .note-card {
   background: linear-gradient(145deg, #fefefe, #e6e6e6);
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
@@ -57,18 +69,46 @@ export default {
   flex-direction: column;
 }
 
+.note-title {
+  border: none;
+  outline: none;
+}
+
+.note-title-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-family: inherit;
+  padding: 6px 10px;
+  border-radius: 12px;
+  transition: border-color 0.3s ease;
+}
+
 .note-textarea {
   width: 100%;
   resize: none;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 12px;
   padding: 10px;
   font-size: 1rem;
   margin-bottom: 15px;
   font-family: inherit;
   min-height: 80px;
+  background: transparent;
   transition: border-color 0.3s ease;
 }
+
+.note-textarea:focus,
+.note-title-input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
 
 .note-textarea:focus {
   outline: none;
@@ -120,4 +160,13 @@ export default {
 .delete-btn:hover {
   background-color: #e53935;
 }
+
+
+
+.note-textarea:focus {
+  outline: none;
+  border-color: transparent; 
+  box-shadow: none;           
+}
+
 </style>
