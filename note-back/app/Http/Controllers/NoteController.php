@@ -7,35 +7,40 @@ use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         return Note::all();
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string',
+        $request->validate([
+            'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
 
-        $note = Note::create($validated);
-
-        return response()->json($note, 201); // ✅ send created note back
+        $note = Note::create($request->all());
+        return response()->json($note, 201);
     }
 
+    public function show($id)
+    {
+        return Note::findOrFail($id);
+    }
 
-    public function update(Request $request, Note $note) {
+    public function update(Request $request, $id)
+    {
+        $note = Note::findOrFail($id);
         $note->update($request->all());
-        return $note;
+
+        return response()->json($note, 200);
     }
 
-    public function destroy(Note $note) {
-        $note->delete();
-        return response()->json(['message' => 'Note deleted']);
-    }
-
-    public function show(Note $note) {
-        return $note;
+    public function destroy($id)
+    {
+        Note::destroy($id);
+        return response()->json(null, 204);
     }
 }
+
 
